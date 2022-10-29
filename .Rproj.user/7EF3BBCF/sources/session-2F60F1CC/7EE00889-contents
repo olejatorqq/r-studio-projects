@@ -7,7 +7,6 @@ date: "2022-10-19"
 ## Список starwars
 ```{r}
 starwars
-
 ```
 
 
@@ -39,4 +38,7 @@ starwars %>% glimpse()
 
 
 ### 4. Сколько уникальных рас персонажей (species) представлено в данных?
+```{r}
+nrow(unique(starwars[c("species")]))
+```
 
