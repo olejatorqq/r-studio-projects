@@ -426,6 +426,28 @@ pre code {
 ## [19] &quot;Zam Wesell&quot;            &quot;Jocasta Nu&quot;            &quot;Ratts Tyerell&quot;        
 ## [22] &quot;R4-P17&quot;                &quot;Padmé Amidala&quot;</code></pre>
 </div>
+<div id="подсчитать-имт-индекс-массы-тела-для-всех-персонажей.-имт-подсчитать-по-формуле-𝐼-𝑚ℎ2-где-𝑚-масса-weight-а-ℎ-рост-height." class="section level3">
+<h3>7. Подсчитать ИМТ (индекс массы тела) для всех персонажей. ИМТ
+подсчитать по формуле 𝐼 = 𝑚/ℎ2 , где 𝑚– масса (weight), а ℎ – рост
+(height).</h3>
+<pre class="r"><code>starwars %&gt;% 
+  mutate(name, bmi = mass / ((height / 100)  ^ 2)) %&gt;%
+  select(name:mass, bmi)</code></pre>
+<pre><code>## # A tibble: 87 × 4
+##    name               height  mass   bmi
+##    &lt;chr&gt;               &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 Luke Skywalker        172    77  26.0
+##  2 C-3PO                 167    75  26.9
+##  3 R2-D2                  96    32  34.7
+##  4 Darth Vader           202   136  33.3
+##  5 Leia Organa           150    49  21.8
+##  6 Owen Lars             178   120  37.9
+##  7 Beru Whitesun lars    165    75  27.5
+##  8 R5-D4                  97    32  34.0
+##  9 Biggs Darklighter     183    84  25.1
+## 10 Obi-Wan Kenobi        182    77  23.2
+## # … with 77 more rows</code></pre>
+</div>
 </div>
 
 
