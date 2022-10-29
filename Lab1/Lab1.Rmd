@@ -47,5 +47,6 @@ print(starwars$name[which.max(starwars$height)])
 
 ### 6. Найти всех персонажей ниже 170
 ```{r}
-starwars
+print(starwars$name[which(starwars$height < 170)])
 ```
+
