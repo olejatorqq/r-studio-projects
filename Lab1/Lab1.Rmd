@@ -50,3 +50,9 @@ print(starwars$name[which.max(starwars$height)])
 print(starwars$name[which(starwars$height < 170)])
 ```
 
+### 7. Подсчитать ИМТ (индекс массы тела) для всех персонажей. ИМТ подсчитать по формуле 𝐼 = 𝑚/ℎ2 , где 𝑚– масса (weight), а ℎ – рост (height).
+```{r}
+starwars %>% 
+  mutate(name, bmi = mass / ((height / 100)  ^ 2)) %>%
+  select(name:mass, bmi)
+```
