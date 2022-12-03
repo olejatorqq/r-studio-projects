@@ -56,3 +56,20 @@ starwars %>%
   mutate(name, bmi = mass / ((height / 100)  ^ 2)) %>%
   select(name:mass, bmi)
 ```
+
+### 8. Найти 10 самых “вытянутых” персонажей. “Вытянутость” оценить по отношению массы (mass) к росту
+(height) персонажей.
+```{r}
+starwars %>% 
+  mutate(vyt=mass/height) %>%
+  arrange(vyt) %>% 
+  slice(1:10)
+```
+
+### 9. Найти средний возраст персонажей каждой расы вселенной Звездных войн.
+```{r}
+starwars %>% 
+  filter_at(vars(species, birth_year), all_vars(!is.na(.))) %>%
+  group_by(species) %>% 
+  summarise(mean_age = mean(birth_year), .groups = 'drop')
+```
