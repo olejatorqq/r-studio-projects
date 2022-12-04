@@ -1,0 +1,94 @@
+--
+title: "Lab_4"
+output: html_document
+date: "2022-12-04"
+---
+
+## Проанализировать встроенные в пакет nycflights13 наборы данных с помощью языка R и ответить на вопросы
+```{r}
+library(nycflights13)
+library(dplyr)
+```
+
+
+## 1. Сколько встроенных в пакет nycflights13 датафреймов?
+```{r}
+ls(package:nycflights13) %>%
+  length
+```
+
+
+## 2. Сколько строк в каждом датафрейме?
+```{r}
+print(paste0("airlines rows: ", nycflights13::airlines %>% nrow()))
+print(paste0("airports rows: ", nycflights13::airports %>% nrow()))
+print(paste0("flights rows: ", nycflights13::flights %>% nrow()))
+print(paste0("planes rows: ", nycflights13::planes %>% nrow()))
+print(paste0("weather rows: ", nycflights13::weather %>% nrow()))
+```
+
+
+## 3. Сколько столбцов в каждом датафрейме?
+```{r}
+print(paste0("airlines columns: ", nycflights13::airlines %>% ncol()))
+print(paste0("airports columns: ", nycflights13::airports %>% ncol()))
+print(paste0("flights columns: ", nycflights13::flights %>% ncol()))
+print(paste0("planes columns: ", nycflights13::planes %>% ncol()))
+print(paste0("weather columns: ", nycflights13::weather %>% ncol()))
+```
+
+
+## 4. Как просмотреть примерный вид датафрейма?
+```{r}
+nycflights13::airlines %>% glimpse()
+nycflights13::airports %>% glimpse()
+nycflights13::flights %>% glimpse()
+nycflights13::planes %>% glimpse()
+nycflights13::weather %>% glimpse()
+```
+
+## 8. Какой аэропорт самый высокогорный (находится выше всех над уровнем моря)?
+```{r}
+airports %>%
+  filter(alt == max(alt)) %>%
+  select(name)
+```
+
+
+## 9. Какие бортовые номера у самых старых самолетов?
+```{r}
+planes %>% 
+  filter(year == min(year,na.rm = TRUE)) %>% 
+  select (tailnum)
+```
+
+
+## 10. Какая средняя температура воздуха была в сентябре в аэропорту John F Kennedy Intl (в градусах Цельсия).
+```{r}
+weather %>%
+  filter(origin == "JFK", month == 9) %>% 
+  summarise(avg_temp = mean(5/9*(temp - 32), na.rm=TRUE))
+```
+
+
+## 11. Самолеты какой авиакомпании совершили больше всего вылетов в июне?
+```{r}
+flights %>%
+  filter(month==6) %>%
+  group_by(carrier) %>%
+  summarise(count_flights=length(flights), .groups = "drop") %>%
+  arrange(desc(count_flights)) %>%
+  head(1)
+```
+
+
+## 12. Самолеты какой авиакомпании задерживались чаще других в 2013 году?
+```{r}
+flights %>%
+  filter(year==2013) %>%
+  filter(dep_delay>0) %>%
+  group_by(carrier) %>%
+  summarise(delay_times=length(flights), .groups = "drop") %>%
+  arrange(desc(delay_times)) %>%
+  head(1)
+```
