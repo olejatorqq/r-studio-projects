@@ -482,6 +482,100 @@ pre code {
 ## $ visib      &lt;dbl&gt; 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,…
 ## $ time_hour  &lt;dttm&gt; 2013-01-01 01:00:00, 2013-01-01 02:00:00, 2013-01-01 03:00…</code></pre>
 </div>
+<div id="сколько-компаний-перевозчиков-carrier-учитывают-эти-наборы-данных-представлено-в-наборах-данных" class="section level2">
+<h2>5. Сколько компаний-перевозчиков (carrier) учитывают эти наборы
+данных (представлено в наборах данных)?</h2>
+<pre class="r"><code>nycflights13::airlines %&gt;%
+  select(carrier) %&gt;%
+  distinct() %&gt;%
+  count()</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##       n
+##   &lt;int&gt;
+## 1    16</code></pre>
+</div>
+<div id="сколько-рейсов-принял-аэропорт-john-f-kennedy-intl-в-мае" class="section level2">
+<h2>6. Сколько рейсов принял аэропорт John F Kennedy Intl в мае?</h2>
+<pre class="r"><code>faa &lt;- airports %&gt;% 
+  filter(name == &quot;John F Kennedy Intl&quot;) %&gt;% 
+  select(faa) %&gt;% 
+  paste(sep=&#39;&#39;)
+
+flights %&gt;% 
+  filter(month == 5, dest == faa) %&gt;% 
+  nrow()</code></pre>
+<pre><code>## [1] 0</code></pre>
+</div>
+<div id="какой-самый-северный-аэропорт" class="section level2">
+<h2>7. Какой самый северный аэропорт?</h2>
+<pre class="r"><code>airports %&gt;%
+  filter(lat==max(lat))</code></pre>
+<pre><code>## # A tibble: 1 × 8
+##   faa   name                      lat   lon   alt    tz dst   tzone
+##   &lt;chr&gt; &lt;chr&gt;                   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;
+## 1 EEN   Dillant Hopkins Airport  72.3  42.9   149    -5 A     &lt;NA&gt;</code></pre>
+</div>
+<div id="какой-аэропорт-самый-высокогорный-находится-выше-всех-над-уровнем-моря" class="section level2">
+<h2>8. Какой аэропорт самый высокогорный (находится выше всех над
+уровнем моря)?</h2>
+<pre class="r"><code>airports %&gt;%
+  filter(alt == max(alt)) %&gt;%
+  select(name)</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##   name     
+##   &lt;chr&gt;    
+## 1 Telluride</code></pre>
+</div>
+<div id="какие-бортовые-номера-у-самых-старых-самолетов" class="section level2">
+<h2>9. Какие бортовые номера у самых старых самолетов?</h2>
+<pre class="r"><code>planes %&gt;% 
+  filter(year == min(year,na.rm = TRUE)) %&gt;% 
+  select (tailnum)</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##   tailnum
+##   &lt;chr&gt;  
+## 1 N381AA</code></pre>
+</div>
+<div id="какая-средняя-температура-воздуха-была-в-сентябре-в-аэропорту-john-f-kennedy-intl-в-градусах-цельсия." class="section level2">
+<h2>10. Какая средняя температура воздуха была в сентябре в аэропорту
+John F Kennedy Intl (в градусах Цельсия).</h2>
+<pre class="r"><code>weather %&gt;%
+  filter(origin == &quot;JFK&quot;, month == 9) %&gt;% 
+  summarise(avg_temp = mean(5/9*(temp - 32), na.rm=TRUE))</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##   avg_temp
+##      &lt;dbl&gt;
+## 1     19.4</code></pre>
+</div>
+<div id="самолеты-какой-авиакомпании-совершили-больше-всего-вылетов-в-июне" class="section level2">
+<h2>11. Самолеты какой авиакомпании совершили больше всего вылетов в
+июне?</h2>
+<pre class="r"><code>flights %&gt;%
+  filter(month==6) %&gt;%
+  group_by(carrier) %&gt;%
+  summarise(count_flights=length(flights), .groups = &quot;drop&quot;) %&gt;%
+  arrange(desc(count_flights)) %&gt;%
+  head(1)</code></pre>
+<pre><code>## # A tibble: 1 × 2
+##   carrier count_flights
+##   &lt;chr&gt;           &lt;int&gt;
+## 1 9E                 19</code></pre>
+</div>
+<div id="самолеты-какой-авиакомпании-задерживались-чаще-других-в-2013-году" class="section level2">
+<h2>12. Самолеты какой авиакомпании задерживались чаще других в 2013
+году?</h2>
+<pre class="r"><code>flights %&gt;%
+  filter(year==2013) %&gt;%
+  filter(dep_delay&gt;0) %&gt;%
+  group_by(carrier) %&gt;%
+  summarise(delay_times=length(flights), .groups = &quot;drop&quot;) %&gt;%
+  arrange(desc(delay_times)) %&gt;%
+  head(1)</code></pre>
+<pre><code>## # A tibble: 1 × 2
+##   carrier delay_times
+##   &lt;chr&gt;         &lt;int&gt;
+## 1 9E               19</code></pre>
+</div>
 
 
 
