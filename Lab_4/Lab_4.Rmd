@@ -1,3 +1,48 @@
-```{r}
+---
+title: "Lab_4"
+output: html_document
+date: "2022-12-04"
+---
 
+## Проанализировать встроенные в пакет nycflights13 наборы данных с помощью языка R и ответить на вопросы
+```{r}
+library(nycflights13)
+library(dplyr)
+```
+
+
+## 1. Сколько встроенных в пакет nycflights13 датафреймов?
+```{r}
+ls(package:nycflights13) %>%
+  length
+```
+
+
+## 2. Сколько строк в каждом датафрейме?
+```{r}
+print(paste0("airlines rows: ", nycflights13::airlines %>% nrow()))
+print(paste0("airports rows: ", nycflights13::airports %>% nrow()))
+print(paste0("flights rows: ", nycflights13::flights %>% nrow()))
+print(paste0("planes rows: ", nycflights13::planes %>% nrow()))
+print(paste0("weather rows: ", nycflights13::weather %>% nrow()))
+```
+
+
+## 3. Сколько столбцов в каждом датафрейме?
+```{r}
+print(paste0("airlines columns: ", nycflights13::airlines %>% ncol()))
+print(paste0("airports columns: ", nycflights13::airports %>% ncol()))
+print(paste0("flights columns: ", nycflights13::flights %>% ncol()))
+print(paste0("planes columns: ", nycflights13::planes %>% ncol()))
+print(paste0("weather columns: ", nycflights13::weather %>% ncol()))
+```
+
+
+## 4. Как просмотреть примерный вид датафрейма?
+```{r}
+nycflights13::airlines %>% glimpse()
+nycflights13::airports %>% glimpse()
+nycflights13::flights %>% glimpse()
+nycflights13::planes %>% glimpse()
+nycflights13::weather %>% glimpse()
 ```
