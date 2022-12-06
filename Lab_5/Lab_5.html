@@ -10,9 +10,9 @@
 
 
 
-<meta name="date" content="2022-11-02" />
+<meta name="date" content="2022-12-06" />
 
-<title>LAB4</title>
+<title>Lab_5</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -349,8 +349,8 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">LAB4</h1>
-<h4 class="date">2022-11-02</h4>
+<h1 class="title toc-ignore">Lab_5</h1>
+<h4 class="date">2022-12-06</h4>
 
 </div>
 
@@ -682,11 +682,48 @@ mm</code></pre>
 <div id="найдите-топ-10-доменов-к-которым-обращаются-пользователи-сети-и-соответственное-количество-обращений" class="section level2">
 <h2>7. Найдите топ-10 доменов, к которым обращаются пользователи сети и
 соответственное количество обращений</h2>
+<pre class="r"><code>point_7&lt;-log_data%&gt;%
+count(log_data$`query `,sort=TRUE)
+point_7_head&lt;-point_7%&gt;%
+head(10)
+point_7_head</code></pre>
+<pre><code>##                                                          log_data$`query `
+## 1                                                teredo.ipv6.microsoft.com
+## 2                                                         tools.google.com
+## 3                                                            www.apple.com
+## 4                                                           time.apple.com
+## 5                                          safebrowsing.clients.google.com
+## 6  *\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00
+## 7                                                                     WPAD
+## 8                                              44.206.168.192.in-addr.arpa
+## 9                                                                 HPE8AA67
+## 10                                                                  ISATAP
+##        n
+## 1  39273
+## 2  14057
+## 3  13390
+## 4  13109
+## 5  11658
+## 6  10401
+## 7   9134
+## 8   7248
+## 9   6929
+## 10  6569</code></pre>
+</div>
 </div>
 <div id="опеределите-базовые-статистические-характеристики-функция-summary-интервала-времени-между-последовательным-обращениями-к-топ-10-доменам." class="section level2">
 <h2>8. Опеределите базовые статистические характеристики (функция
 summary()) интервала времени между последовательным обращениями к топ-10
 доменам.</h2>
+<pre class="r"><code>point_7_head%&gt;%summary()</code></pre>
+<pre><code>##  log_data$`query `        n        
+##  Length:10          Min.   : 6569  
+##  Class :character   1st Qu.: 7720  
+##  Mode  :character   Median :11030  
+##                     Mean   :13177  
+##                     3rd Qu.:13320  
+##                     Max.   :39273</code></pre>
+</div>
 </div>
 <div id="часто-вредоносное-программное-обеспечение-использует-dns-канал-в-качестве-канала-управления-периодически-отправляя-запросы-на-подконтрольный-злоумышленникам-dns-сервер.-по-периодическим-запросам-на-один-и-тот-же-домен-можно-выявить-скрытый-dns-канал.-есть-ли-такие-ip-адреса-в-исследуемом-датасете" class="section level2">
 <h2>9. Часто вредоносное программное обеспечение использует DNS канал в
@@ -694,9 +731,275 @@ summary()) интервала времени между последовател
 подконтрольный злоумышленникам DNS сервер. По периодическим запросам на
 один и тот же домен можно выявить скрытый DNS канал. Есть ли такие IP
 адреса в исследуемом датасете?</h2>
+<pre class="r"><code>point_9s&lt;-log_data[,c(&quot;orig_ip &quot;,&quot;query &quot;)]
+point_8&lt;-point_9s
+point_8%&gt;%group_by(point_8$`query `)</code></pre>
+<pre><code>## # A tibble: 427,935 × 3
+## # Groups:   point_8$`query ` [5,178]
+##    `orig_ip `      `query `                                              point…¹
+##    &lt;chr&gt;           &lt;chr&gt;                                                 &lt;chr&gt;  
+##  1 192.168.202.100 &quot;*\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00… &quot;*\\x0…
+##  2 192.168.202.76  &quot;HPE8AA67&quot;                                            &quot;HPE8A…
+##  3 192.168.202.76  &quot;HPE8AA67&quot;                                            &quot;HPE8A…
+##  4 192.168.202.76  &quot;HPE8AA67&quot;                                            &quot;HPE8A…
+##  5 192.168.202.76  &quot;WPAD&quot;                                                &quot;WPAD&quot; 
+##  6 192.168.202.76  &quot;WPAD&quot;                                                &quot;WPAD&quot; 
+##  7 192.168.202.76  &quot;WPAD&quot;                                                &quot;WPAD&quot; 
+##  8 192.168.202.89  &quot;EWREP1&quot;                                              &quot;EWREP…
+##  9 192.168.202.89  &quot;EWREP1&quot;                                              &quot;EWREP…
+## 10 192.168.202.89  &quot;EWREP1&quot;                                              &quot;EWREP…
+## # … with 427,925 more rows, and abbreviated variable name ¹​`point_8$\`query \``</code></pre>
+<pre class="r"><code>point_8&lt;-point_8%&gt;%group_by(point_8$orig_ip ) %&gt;%count(point_8$`query `,sort=TRUE)
+point_8&lt;-point_8%&gt;%count(point_8$`point_8$orig_ip`,)
+point_8&lt;-point_8[which(point_8$n==1),]
+knitr::kable(point_8[,c(&#39;point_8$orig_ip&#39;)], &quot;pipe&quot;)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">point_8$orig_ip</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">128.244.172.252</td>
+</tr>
+<tr class="even">
+<td align="left">172.16.10.130</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.100.130</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.202.116</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.207.58</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.208.18</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.21.1</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.21.100</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.21.102</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.21.202</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.21.203</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.21.252</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.21.253</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.21.254</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.22.1</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.22.100</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.22.101</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.22.102</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.22.202</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.22.203</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.22.252</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.22.253</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.229.1</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.229.101</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.229.153</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.229.156</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.229.251</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.229.254</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.23.1</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.23.100</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.23.101</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.23.102</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.23.103</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.23.202</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.23.203</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.23.252</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.23.253</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.24.1</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.24.102</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.24.103</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.24.202</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.24.203</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.24.252</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.24.253</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.24.254</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.25.1</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.25.100</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.25.101</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.25.102</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.25.103</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.25.152</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.25.202</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.25.203</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.25.253</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.26.1</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.26.103</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.26.152</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.26.254</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.27.1</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.27.100</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.27.101</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.27.102</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.27.202</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.27.203</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.27.253</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.28.1</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.28.101</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.28.102</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.28.103</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.28.152</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.28.202</td>
+</tr>
+<tr class="even">
+<td align="left">192.168.28.253</td>
+</tr>
+<tr class="odd">
+<td align="left">192.168.28.254</td>
+</tr>
+<tr class="even">
+<td align="left">2001:dbb:c18:202:71f3:e219:3f6a:4311</td>
+</tr>
+<tr class="odd">
+<td align="left">2001:dbb:c18:202:9c6b:be4e:1289:2663</td>
+</tr>
+<tr class="even">
+<td align="left">2001:dbb:c18:202:a1dd:6355:28ae:da1e</td>
+</tr>
+<tr class="odd">
+<td align="left">2001:dbb:c18:202:b9ac:6976:ae1c:e10b</td>
+</tr>
+<tr class="even">
+<td align="left">fe80::423c:fcff:fe06:98a4</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="обогащение-данных-10.-определите-местоположение-страну-город-и-организацию-провайдера-для-топ-10-доменов.-для-этого-можно-использовать-сторонние-сервисы-например-httpsv4.ifconfig.co." class="section level2">
-<h2>Обогащение данных 10. Определите местоположение (страну, город) и
+</div>
+<div id="определите-местоположение-страну-город-и-организацию-провайдера-для-топ-10-доменов.-для-этого-можно-использовать-сторонние-сервисы-например-httpsv4.ifconfig.co." class="section level2">
+<h2>10. Определите местоположение (страну, город) и
 организацию-провайдера для топ-10 доменов. Для этого можно использовать
 сторонние сервисы, например <a href="https://v4.ifconfig.co/" class="uri">https://v4.ifconfig.co/</a>.</h2>
 </div>
