@@ -16,16 +16,15 @@ inf = read.csv("dns.log", header = FALSE,sep = "\t",encoding = "UTF-8")
 ## 2. Добавьте пропущенные данные о структуре данных (назначении столбцов)
 ```{r}
 head=read.csv("header.csv", header = TRUE)
-
 field<-head[,1]
 inf = read.csv("dns.log", header = FALSE,sep = "\t",encoding = "UTF-8")
 names(inf)<-field
-inf%>%glimpse()
 ```
 
 ## 3. Преобразуйте данные в столбцах в нужный формат
 ```{r}
-
+orig_ip<-unique(inf$`orig_ip `)
+orig_ip
 ```
 
 ## Анализ 4. Сколько участников информационного обмена в сети Доброй Организации?
@@ -54,7 +53,6 @@ contr
 
 ## 6. Найдите топ-10 участников сети, проявляющих наибольшую сетевую активность.
 ```{r}
-
 m1<-inf%>%
 count(inf$`orig_ip `,sort=TRUE)
 colnames(m1) <- c("Person", "count")
@@ -65,34 +63,27 @@ mm<-rbind(m1,m2)
 mm<-mm %>%
   group_by(Person) %>%
   summarise(count)
-mm<-mm[order(mm$Person, decreasing = TRUE), ]   
-mm
 ```
 
 ## 7. Найдите топ-10 доменов, к которым обращаются пользователи сети и соответственное количество обращений
 ```{r}
-m7<-inf%>%
-count(inf$`query `,sort=TRUE)
-m7head<-m7%>%
+point_7<-log_data%>%
+count(log_data$`query `,sort=TRUE)
+point_7_head<-point_7%>%
 head(10)
-m7head
+point_7_head
 ```
 
 ## 8. Опеределите базовые статистические характеристики (функция summary()) интервала времени между последовательным обращениями к топ-10 доменам.
 ```{r}
-m7head%>%summary()
+point_7_head%>%summary()
 ```
 
 ## 9. Часто вредоносное программное обеспечение использует DNS канал в качестве канала управления, периодически отправляя запросы на подконтрольный злоумышленникам DNS сервер. По периодическим запросам на один и тот же домен можно выявить скрытый DNS канал. Есть ли такие IP адреса в исследуемом датасете?
 ```{r}
-ms<-inf[,c("orig_ip ","query ")]
-m8<-ms
-m8%>%group_by(m8$`query `)
-m8<-m8%>%group_by(m8$orig_ip ) %>%count(m8$`query `,sort=TRUE)
-m8<-m8%>%count(m8$`m8$orig_ip`,)
-m8<-m8[which(m8$n==1),]
-m8[,c('m8$orig_ip')]
-
+point_9s<-log_data[,c("orig_ip ","query ")]
+point_8<-point_9s
+point_8%>%group_by(point_8$`query `)
 ```
 
 ## Обогащение данных 10. Определите местоположение (страну, город) и организацию-провайдера для топ-10 доменов. Для этого можно использовать сторонние сервисы, например https://v4.ifconfig.co/.
