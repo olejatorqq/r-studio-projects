@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 
 <html>
 
@@ -10,8 +10,9 @@
 
 
 
+<meta name="date" content="2022-12-06" />
 
-<title>Lab_5.knit</title>
+<title>Lab_5</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -354,11 +355,61 @@ pre code {
 
 
 
+<h1 class="title toc-ignore">Lab_5</h1>
+<h4 class="date">2022-12-06</h4>
 
 </div>
 
 
-
+<div id="импортируйте-данные-dns" class="section level2">
+<h2>1. Импортируйте данные DNS</h2>
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>## Warning: пакет &#39;dplyr&#39; был собран под R версии 4.2.2</code></pre>
+<pre><code>## 
+## Присоединяю пакет: &#39;dplyr&#39;</code></pre>
+<pre><code>## Следующие объекты скрыты от &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## Следующие объекты скрыты от &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>inf_data = read.csv(&quot;dns.log&quot;, header = FALSE,sep = &quot;\t&quot;,encoding = &quot;UTF-8&quot;)</code></pre>
+</div>
+<div id="добавьте-пропущенные-данные-о-структуре-данных-назначении-столбцов" class="section level2">
+<h2>2. Добавьте пропущенные данные о структуре данных (назначении
+столбцов)</h2>
+<pre class="r"><code>head=read.csv(&quot;header.csv&quot;, header = TRUE)
+field&lt;-head[,1]
+inf_data = read.csv(&quot;dns.log&quot;, header = FALSE,sep = &quot;\t&quot;,encoding = &quot;UTF-8&quot;)
+names(inf_data)&lt;-field
+inf_data %&gt;%
+  glimpse()</code></pre>
+<pre><code>## Rows: 427,935
+## Columns: 23
+## $ `ts `          &lt;dbl&gt; 1331901006, 1331901015, 1331901016, 1331901017, 1331901…
+## $ `uid `         &lt;chr&gt; &quot;CWGtK431H9XuaTN4fi&quot;, &quot;C36a282Jljz7BsbGH&quot;, &quot;C36a282Jljz…
+## $ `id `          &lt;chr&gt; &quot;192.168.202.100&quot;, &quot;192.168.202.76&quot;, &quot;192.168.202.76&quot;, …
+## $ ``             &lt;int&gt; 45658, 137, 137, 137, 137, 137, 137, 137, 137, 137, 137…
+## $ `proto `       &lt;chr&gt; &quot;192.168.27.203&quot;, &quot;192.168.202.255&quot;, &quot;192.168.202.255&quot;,…
+## $ `trans_id `    &lt;int&gt; 137, 137, 137, 137, 137, 137, 137, 137, 137, 137, 137, …
+## $ `query `       &lt;chr&gt; &quot;udp&quot;, &quot;udp&quot;, &quot;udp&quot;, &quot;udp&quot;, &quot;udp&quot;, &quot;udp&quot;, &quot;udp&quot;, &quot;udp&quot;,…
+## $ `qclass `      &lt;int&gt; 33008, 57402, 57402, 57402, 57398, 57398, 57398, 62187,…
+## $ `qclass_name ` &lt;chr&gt; &quot;*\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x…
+## $ `qtype `       &lt;chr&gt; &quot;1&quot;, &quot;1&quot;, &quot;1&quot;, &quot;1&quot;, &quot;1&quot;, &quot;1&quot;, &quot;1&quot;, &quot;1&quot;, &quot;1&quot;, &quot;1&quot;, &quot;1&quot;, …
+## $ `qtype_name `  &lt;chr&gt; &quot;C_INTERNET&quot;, &quot;C_INTERNET&quot;, &quot;C_INTERNET&quot;, &quot;C_INTERNET&quot;,…
+## $ `rcode `       &lt;chr&gt; &quot;33&quot;, &quot;32&quot;, &quot;32&quot;, &quot;32&quot;, &quot;32&quot;, &quot;32&quot;, &quot;32&quot;, &quot;32&quot;, &quot;32&quot;, &quot;…
+## $ `rcode_name `  &lt;chr&gt; &quot;SRV&quot;, &quot;NB&quot;, &quot;NB&quot;, &quot;NB&quot;, &quot;NB&quot;, &quot;NB&quot;, &quot;NB&quot;, &quot;NB&quot;, &quot;NB&quot;, …
+## $ `QR `          &lt;chr&gt; &quot;0&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, …
+## $ `AA `          &lt;chr&gt; &quot;NOERROR&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;,…
+## $ `TC RD `       &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,…
+## $ `RA `          &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,…
+## $ `Z `           &lt;lgl&gt; FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, …
+## $ `answers `     &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,…
+## $ `TTLs `        &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1…
+## $ `rejected `    &lt;chr&gt; &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, …
+## $ NA             &lt;chr&gt; &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, …
+## $ NA             &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,…</code></pre>
+</div>
 
 
 
