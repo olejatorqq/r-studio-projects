@@ -19,3 +19,76 @@ names(inf_data)<-field
 inf_data %>%
   glimpse()
 ```
+
+## 3. Преобразуйте данные в столбцах в нужный формат
+
+## 4. Сколько участников информационного обмена в сети Доброй Организации?
+```{r}
+orig_ip<-unique(inf_data$`orig_ip `)
+resp_ip<-unique(inf_data$`resp_ip `)
+all_ip<-merge(orig_ip,resp_ip)
+NROW(unique(all_ip$`x`))
+```
+
+## 5. Какое соотношение участников обмена внутри сети и участников обращений к внешним ресурсам?
+```{r}
+p1<-unique(inf_data$`orig_ip `,sort=TRUE)
+p2<-unique(inf_data$`resp_ip `,sort=TRUE)
+n_vector<-c(p1, p2)
+n_vector<-n_vector[!duplicated(n_vector)]
+lall=length(n_vector)
+toMatch <- c("(192.168.)([0-9]{1,3}[.])[0-9]{1,3}","(10.0.)([0-9]{1,3}[.])[0-9]{1,3}","(100.64.)([0-9]{1,3}[.])[0-9]{1,3}","(172.16.)([0-9]{1,3}[.])[0-9]{1,3}")
+l1=length(unique(grep(paste(toMatch,collapse="|"), 
+                        n_vector, value=TRUE)))
+l2=lall-l1
+contr=l1/l2
+contr
+
+```
+
+## 6. Найдите топ-10 участников сети, проявляющих наибольшую сетевую активность
+```{r}
+ac_1<-inf_data %>%
+  count(inf_data$`orig_ip `,sort=TRUE)
+colnames(ac_1) <- c("Person", "count")
+ac_2<-inf_data%>%
+count(inf_data$`resp_ip `,sort=TRUE)
+colnames(ac_2) <- c("Person", "count")
+pop<-rbind(ac_1,ac_2)
+pop<-pop %>%
+  group_by(Person) %>%
+  summarise(count)
+pop<-pop[order(pop$Person, decreasing = TRUE), ]   
+pop
+```
+
+## 7. Найдите топ-10 доменов, к которым обращаются пользователи сети и соответственное количество обращений
+```{r}
+damains<-inf_data%>%
+count(inf_data$`query `,sort=TRUE)
+domains_head<-damains%>%
+head(10)
+domains_head
+```
+
+## 8. Опеределите базовые статистические характеристики (функция summary()) интервала времени между последовательным обращениями к топ-10 доменам.
+```{r}
+domains_head%>%summary()
+```
+
+## 9. Часто вредоносное программное обеспечение использует DNS канал в качестве канала управления, периодически отправляя запросы на подконтрольный злоумышленникам DNS сервер. По периодическим запросам на один и тот же домен можно выявить скрытый DNS канал. Есть ли такие IP адреса в исследуемом датасете?
+```{r}
+ms<-inf_data[,c("orig_ip ","query ")]
+qq<-ms
+qq%>%group_by(qq$`query `)
+qq<-qq%>%group_by(qq$orig_ip ) %>%count(qq$`query `,sort=TRUE)
+qq<-qq%>%count(qq$`qq$orig_ip`,)
+qq<-qq[which(qq$n==1),]
+qq[,c('m8$orig_ip')]
+
+```
+
+## 10. Определите местоположение (страну, город) и организацию-провайдера для топ-10 доменов. Для этого можно использовать сторонние сервисы, например https://v4.ifconfig.co/.
+```{r}
+
+```
