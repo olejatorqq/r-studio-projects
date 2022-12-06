@@ -1,3 +1,21 @@
-```{r}
+---
+title: "Lab_5"
+output: html_document
+date: "2022-12-06"
+---
 
+## 1. Импортируйте данные DNS
+```{r}
+library(dplyr)
+inf_data = read.csv("dns.log", header = FALSE,sep = "\t",encoding = "UTF-8")
+```
+
+## 2. Добавьте пропущенные данные о структуре данных (назначении столбцов)
+```{r}
+head=read.csv("header.csv", header = TRUE)
+field<-head[,1]
+inf_data = read.csv("dns.log", header = FALSE,sep = "\t",encoding = "UTF-8")
+names(inf_data)<-field
+inf_data %>%
+  glimpse()
 ```
